@@ -39,10 +39,6 @@ const.find("dipole")
 ```
 
 ```python
-mu_e
-```
-
-```python
 machine_dim_x = 1.0
 machine_dim_y = 0.1
 machine_dim_z = 0.1
@@ -85,9 +81,14 @@ mu_save = np.zeros((times.size,3))
 ```
 
 ```python
+# evolution for mu inspired by https://www.particleincell.com/2011/vxb-rotation/
+          
 for i,t in enumerate(times):
-    v += 0.5*dt*np.matmul(mu,gradB(r))/m
-    mu += dt*gyro*np.cross(mu,B(r))
+    v += 0.5*dt*np.matmul(mu,gradB(r))/m            
+    Br = B(r)
+    s = 2.0/(1+(np.linalg.norm(Br)*gyro*dt*0.5)**2.0)
+    mu_prime = mu + 0.5*dt*gyro*np.cross(mu,Br)
+    mu += 0.5*dt*gyro*s*np.cross(mu_prime,Br)            
     r += dt*v
     v += 0.5*dt*np.matmul(mu,gradB(r))/m
     
