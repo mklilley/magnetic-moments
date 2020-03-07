@@ -119,13 +119,13 @@ r[0]
 ```
 
 ```python
-
+x=
 ```
 
 ## Adding inhomogeneous field
 
 ```python
-s = 0.5*np.tanh(-10.0*(x-machine_dim_x))+0.5
+s = 0.5*np.tanh(-10.0*(r_save[0]-machine_dim_x))+0.5
 ```
 
 ```python
