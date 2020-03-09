@@ -447,7 +447,7 @@ ramp_time = 4e-3 / v0
 ```
 
 ```julia
-# how many time steps to we have while the particle is in the Bx ramp
+# how many time steps do we have while the particle is in the Bx ramp
 ramp_time/dt
 ```
 
