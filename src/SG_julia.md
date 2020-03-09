@@ -238,7 +238,7 @@ $$
 $$
 
 
-I have employed an algorithm that's a hybrid of [leapfrog](https://en.wikipedia.org/wiki/Leapfrog_integration) and the [Boris method](https://www.particleincell.com/2011/vxb-rotation/).
+We employ an algorithm that's a hybrid of [leapfrog](https://en.wikipedia.org/wiki/Leapfrog_integration) and the [Boris method](https://www.particleincell.com/2011/vxb-rotation/).
 
 ```julia
 function frog_boris(r,v,mu)
@@ -367,7 +367,7 @@ $$
 $$
 
 
-One can begin to think about trying to verify this through simulation by first create some approximations for the edge field, e.g.
+One can begin to think about trying to verify this through simulation by first creating some approximations for the edge field, e.g.
 
 ```julia
 z = LinRange(-0.006,0.004,100)
@@ -384,7 +384,7 @@ xlabel("y (mm)");
 ylabel(L"\partial B_z /\partial y \ (T/m)");
 ```
 
-We can re-create field and gradient functions to include the new inhomogeneity. 
+We can re-create the field and gradient functions to include the new inhomogeneity. 
 
 ```julia
 function B(r)
@@ -399,6 +399,7 @@ end;
 function gradB(r)
     gradB = zeros(3,3)
     gradB[3,3] = gradB0
+    gradB[1,1] = -gradB0
     gradB[3,2] = B0.*0.5.*sech.(800.0.*r[3].+2.0).^2
     return gradB
 end;
