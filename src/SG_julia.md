@@ -237,10 +237,7 @@ $$
 I have employed an algorithm that's a hybrid of [leapfrog](https://en.wikipedia.org/wiki/Leapfrog_integration) and the [Boris method](https://www.particleincell.com/2011/vxb-rotation/).
 
 ```julia
-for (i,t) in enumerate(times)
-    
-    r_save[i,:] = r
-    mu_save[i,:] = mu
+function frog_boris(r,v,mu)
     
     # leapfrog kick
     v += (0.5*dt*(mu'*gradB(r))/m_Ag)'
@@ -256,6 +253,18 @@ for (i,t) in enumerate(times)
     
     # leapfrog kick
     v += (0.5*dt*(mu'*gradB(r))/m_Ag)'
+    
+    return r, v, mu
+end;
+```
+
+```julia
+for (i,t) in enumerate(times)
+    
+    r_save[i,:] = r
+    mu_save[i,:] = mu
+    
+    r, v, mu = frog_boris(r, v, mu)
     
 end
 ```
@@ -319,27 +328,11 @@ for p in 1:np
     theta = acos(2*rand()-1)
     phi = rand()*2*pi
     mu = [sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta)]*mu_Ag
-    
-
-    muz_init[p] = mu[3]
 
 
     for (i,t) in enumerate(times)
 
-        # leapfrog kick
-        v += (0.5*dt*(mu'*gradB(r))/m_Ag)'
-
-        # Boris
-        Br = B(r)
-        s = 2.0/(1+(norm(Br)*gyro*dt*0.5)^2)
-        mu_prime = mu + 0.5*dt*gyro*cross(mu,Br)
-        mu += 0.5*dt*gyro*s*cross(mu_prime,Br)
-
-        # leapfrog drift
-        r += dt*v
-
-        # leapfrog kick
-        v += (0.5*dt*(mu'*gradB(r))/m_Ag)'
+        r,v,mu = frog_boris(r,v,mu)
 
     end
     
@@ -353,14 +346,122 @@ hist(zs/1e-3, normed=true);
 xlabel("z (mm)");
 ```
 
-We can see that there is a pretty even distribution of z's as one might expect.
+We can see that there is a pretty even distribution of z's as one might expect - nothing controversial.
 
 
 ## Including edge effects
 
 
-> TODO
+The França paper makes the case that the SG results can be explained classically as being caused by the inhomogeneity in the magnetic field along y. Specifically, the magnetic field goes from being zero outside the magnet to a maximum inside the magnet over a very short length scale (cf Fig 3 of França):
+
+![B field gradient in y](SG-B-gradient-y.png)
+
+França shows that if energy of the particle and electromagnet are considered together, then the work done by (or on) the magnet, as the particle enters, leads to a change of$\theta$ (the angle of $\mu$ with respect to z axis) according to:
+
+$$
+\dot \theta = - \frac{v_y}{B_z(y)}\frac{\partial B_z(y)}{\partial y} \cot(y)
+$$
+
+
+One can begin to think about trying to verify this through simulation by first create some approximations for the edge field, e.g.
 
 ```julia
+z = LinRange(-0.006,0.004,100)
 
+subplot(211)
+B_edge = B0.*(0.5.*tanh.(800.0.*z.+2.0).+0.5)
+plot(z,B_edge)
+ylabel(L"B_z (T)");
+
+subplot(212)
+B_edge_grad = B0.*0.5.*sech.(800.0.*z.+2.0).^2
+plot(z,B_edge_grad)
+xlabel("y (mm)");
+ylabel(L"\partial B_z /\partial y \ (T/m)");
 ```
+
+We can re-create field and gradient functions to include the new inhomogeneity. 
+
+```julia
+function B(r)
+    B = zeros(3)
+    B[1] = -gradB0*r[1]
+    B[3] = B0.*(0.5.*tanh.(800.0.*r[3].+2.0).+0.5);
+    return B
+end;
+```
+
+```julia
+function gradB(r)
+    gradB = zeros(3,3)
+    gradB[3,3] = gradB0
+    gradB[3,2] = B0.*0.5.*sech.(800.0.*r[3].+2.0).^2
+    return gradB
+end;
+```
+
+and then re-run the simulation code for many particles:
+
+```julia
+# number of particles
+np = 1000
+
+# place to store the final z-position
+zs = zeros(np)
+
+for p in 1:np
+    
+    v = [0,v0,0]
+    r = [0,0,0]
+    theta = acos(2*rand()-1)
+    phi = rand()*2*pi
+    mu = [sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta)]*mu_Ag
+
+
+    for (i,t) in enumerate(times)
+
+        r,v,mu = frog_boris(r,v,mu)
+
+    end
+    
+    zs[p] = r[3]
+
+end
+```
+
+```julia
+hist(zs/1e-3, normed=true);
+xlabel("z (mm)");
+```
+
+There is again nothing striking in the above figure, the distribution is again pretty uniform. We might wonder whether we have sufficient resolution of the inhomogeneity, if not then maybe that's why we don't see any difference. Let's see:
+
+```julia
+# time to traverse the Bz ramp
+ramp_time = 4e-3 / v0
+```
+
+```julia
+# how many time steps to we have while the particle is in the Bx ramp
+ramp_time/dt
+```
+
+We seem to have enough resolution, so that's not the problem.
+
+
+Perhaps the problem lies in our current equations of motion:
+$$
+\frac{dv}{dt} = \frac{1}{m} \mu \nabla B
+$$
+
+
+$$
+\frac{d\mu}{dt} = \gamma \mu\times B
+$$
+
+
+There does not appear to be any obvious way that the inhomogeneity in the field  can affect $\mu$ in the way described by França. Perhaps we need to go beyond the infinitesimal magnetic moment approximation, i.e. beyond $\tau = \mu \times B$. Rather than considering only the dipole contributions to the torque perhaps we should look at the [quadrupole terms](https://physics.stackexchange.com/a/208922). Or perhaps we need to include self consistent equations for the magnetic field - this would be in the spirit of the França paper.
+
+
+---
+**To be continued**
