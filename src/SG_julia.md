@@ -149,10 +149,7 @@ Recalling that:
 we can write some equations of motion:
 
 $$
-\frac{dv}{dt} = \frac{1}{m} \mu \nabla B
-$$
-
-$$
+\frac{dv}{dt} = \frac{1}{m} \mu \nabla B \\
 \frac{d\mu}{dt} = \gamma \mu\times B
 $$
 
@@ -221,10 +218,7 @@ mu_save = zeros(length(times),3);
 To numerically solve equations of motion:
 
 $$
-\frac{dv}{dt} = \frac{1}{m} \mu \nabla B
-$$
-
-$$
+\frac{dv}{dt} = \frac{1}{m} \mu \nabla B \\
 \frac{d\mu}{dt} = \gamma \mu \times B
 $$
 
