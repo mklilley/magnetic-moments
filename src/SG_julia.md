@@ -122,7 +122,7 @@ This field is very strong! To get a sense of what equipment generates these fiel
 
 ## Equations of motion for a magnetic moment in a B field
 
-If we consider a infinitesimal current loop, then the magnetic moment $\mu$ is:
+If we consider an infinitesimal current loop, then the magnetic moment $\mu$ is:
 
 $$
 \mu = IA
@@ -186,7 +186,11 @@ $$ \mu = [\sin(\theta)\cos(\phi), \ \sin(\theta)\sin(\phi), \ \cos(\theta)]\mu_{
 where $\theta$ and $\phi$ are the [spherical angle coordiantes](https://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates) corresponding to the ISO convention. In order to ensure a uniform distribution we must choose
 
 $$
-\theta = \arccos(2\times rand()-1) \\
+\theta = \arccos(2\times rand()-1)
+$$
+
+
+$$
 \phi = 2\pi\times rand()
 $$
 
