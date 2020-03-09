@@ -149,7 +149,7 @@ Recalling that:
 we can write some equations of motion:
 
 $$
-\frac{dv}{dt} = \frac{1}{m} \mu\nabla B
+\frac{dv}{dt} = \frac{1}{m} \mu \nabla B
 $$
 
 $$
@@ -221,11 +221,11 @@ mu_save = zeros(length(times),3);
 To numerically solve equations of motion:
 
 $$
-\frac{dv}{dt} = \frac{1}{m}\mu\nabla B
+\frac{dv}{dt} = \frac{1}{m} \mu \nabla B
 $$
 
 $$
-\frac{d\mu}{dt} = \gamma \mu\times B
+\frac{d\mu}{dt} = \gamma \mu \times B
 $$
 
 I have employed an algorithm that's a hybrid of [leapfrog](https://en.wikipedia.org/wiki/Leapfrog_integration) and the [Boris method](https://www.particleincell.com/2011/vxb-rotation/).
