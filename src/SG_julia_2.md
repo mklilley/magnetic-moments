@@ -347,14 +347,93 @@ hist(zs/1e-3, normed=true);
 xlabel("z (mm)");
 ```
 
-We can see that there is a pretty even distribution of z's as one might expect.
+```julia
 
-
-## Including edge effects
-
-
-> TODO
+```
 
 ```julia
 
+```
+
+```julia
+
+```
+
+```julia
+
+```
+
+Now let's initialise many different initial conditions and see what $z$ we end up with.
+
+```julia
+np = 1000
+zs = zeros(np)
+ys = zeros(np)
+mus = zeros(np)
+muz_init = zeros(np)
+
+for p in 1:np
+    
+    # https://mathworld.wolfram.com/SphericalCoordinates.html
+    # https://math.stackexchange.com/a/1586583
+    theta = acos(2*rand()-1)
+    phi = rand()*2*pi
+    mu = [mu_e*sin(theta)*cos(phi), mu_e*sin(phi)*sin(theta), mu_e*cos(theta)]
+    r = [0,-0.01,0]
+    v = [0,v0,0]
+    muz_init[p] = mu[3]
+
+
+    for (i,t) in enumerate(times)
+
+        v += (0.5*dt*(mu'*gradB(r))/m_Ag)'
+        Br = B(r)
+        s = 2.0/(1+(norm(Br)*gyro*dt*0.5)^2)
+        mu_prime = mu + 0.5*dt*gyro*cross(mu,Br)
+        mu += 0.5*dt*gyro*s*cross(mu_prime,Br)
+        r += dt*v
+        v += (0.5*dt*(mu'*gradB(r))/m_Ag)'
+    end
+    
+    zs[p] = r[3]
+    ys[p] = r[2]
+    mus[p] = mu[3]
+end
+```
+
+```julia
+hist(muz_init./mu_B);
+```
+
+```julia
+hist(ys./1e-3);
+```
+
+```julia
+plot(mus./mu_B)
+```
+
+```julia
+hist(mus./mu_B)
+```
+
+```julia
+function B(r)
+    B = zeros(3)
+    B[1] = -gradB0*r[1]
+#     B[3] = B0 + gradB0*r[3]
+    B[3] = B0.*(0.5.*tanh.(800.0.*r[3].+2.0).+0.5);
+    return B
+end;
+```
+
+```julia
+# https://en.wikipedia.org/wiki/Gradient#Gradient_of_a_vector
+function gradB(r)
+    gradB = zeros(3,3)
+    gradB[3,3] = gradB0
+    gradB[3,2] = B0.*0.5.*sech.(800.0.*r[3].+2.0).^2
+    ## gradB[1,1] = -gradB0
+    return gradB
+end;
 ```
