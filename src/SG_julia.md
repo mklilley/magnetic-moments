@@ -149,7 +149,7 @@ Recalling that:
 we can write some equations of motion:
 
 $$
-\frac{dv}{dt} = \frac{1}{m}\mu\nabla B
+\frac{dv}{dt} = \frac{1}{m} \mu\nabla B
 $$
 
 $$
