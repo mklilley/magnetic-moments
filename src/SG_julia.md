@@ -101,13 +101,31 @@ function B(r)
 end;
 ```
 
-We can visualise at the strength of B in the x,z plane using a contour plot.
+We can visualise at B field lines and also the strength of B in the x,z plane:
 
 ```julia
-r = [[i,0,j] for i=-0.01:0.0001:0.01, j=-0.01:0.0001:0.01];
+r = [[j,0,i] for i=-0.01:0.0001:0.01, j=-0.01:0.0001:0.01];
 x = [x for (x,y,z) in r]
-z = [z for (x,y,z) in r]
-con = contour(x.*1000, z.*1000, norm.(B.(r)), levels=20)
+z = [z for (x,y,z) in r];
+```
+
+```julia
+B_calc = B.(r)
+B_calc_x = [Bx for (Bx,By,Bz) in B_calc] 
+B_calc_z = [Bz for (Bx,By,Bz) in B_calc]
+B_norm = norm.(B.(r));
+```
+
+```julia
+st = streamplot(x*1000, z*1000 ,B_calc_x, B_calc_z, linewidth=3*Bnorm/maximum(Bnorm), color=B_calc_z)
+cb=colorbar(st.lines)
+cb.set_label(L"B_z")
+xlabel("x (mm)")
+ylabel("z (mm)");
+```
+
+```julia
+con = contour(x.*1000, z.*1000, B_norm, levels=20)
 xlabel("x (mm)")
 ylabel("z (mm)")
 clabel(con, inline=1, fontsize=10);
