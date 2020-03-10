@@ -71,7 +71,7 @@ A 2009 paper by França on "[The Stern–Gerlach Phenomenon According to Classic
 An approximation for the magnetic field inside the electromagnet (length 3.5cm) is described by França's Eq 23:
 
 $$
-H = (-\beta x, 0, B_0 + \beta z)
+B = (-\beta x, 0, B_0 + \beta z)
 $$
 
 with $ \beta = 1800$ explicitly stated at the bottom of page 1186 and $B_0$ inferred from França's Fig 3 and checked in Fig. 5 of [Rabi's original paper](https://link.springer.com/article/10.1007/BF01339837).
@@ -81,7 +81,7 @@ with $ \beta = 1800$ explicitly stated at the bottom of page 1186 and $B_0$ infe
 B0 = 1.4
 
 # x and z B field gradient inside the electromagnet
-gradB0 = 1800
+beta = 1800
 
 # electromagnet dimesion in y
 # note, I cannot find dimensions for x and z
@@ -95,8 +95,8 @@ Let's explore the B field given França's parameters.
 ```julia
 function B(r)
     B = zeros(3)
-    B[1] = -gradB0*r[1]
-    B[3] = B0 + gradB0*r[3]
+    B[1] = -beta*r[1]
+    B[3] = B0 + beta*r[3]
     return B
 end;
 ```
@@ -182,8 +182,8 @@ where $\nabla B$ is the [gradient of the vector]( https://en.wikipedia.org/wiki/
 ```julia
 function gradB(r)
     gradB = zeros(3,3)
-    gradB[3,3] = gradB0
-    gradB[1,1] = -gradB0
+    gradB[3,3] = beta
+    gradB[1,1] = -beta
     return gradB
 end;
 ```
@@ -407,7 +407,7 @@ We can re-create the field and gradient functions to include the new inhomogenei
 ```julia
 function B(r)
     B = zeros(3)
-    B[1] = -gradB0*r[1]
+    B[1] = -beta*r[1]
     B[3] = B0.*(0.5.*tanh.(800.0.*r[3].+2.0).+0.5);
     return B
 end;
@@ -416,8 +416,8 @@ end;
 ```julia
 function gradB(r)
     gradB = zeros(3,3)
-    gradB[3,3] = gradB0
-    gradB[1,1] = -gradB0
+    gradB[3,3] = beta
+    gradB[1,1] = -beta
     gradB[3,2] = B0.*0.5.*sech.(800.0.*r[3].+2.0).^2
     return gradB
 end;
