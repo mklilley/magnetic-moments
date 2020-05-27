@@ -483,7 +483,34 @@ $$
 $$
 
 
-There does not appear to be any obvious way that the inhomogeneity in the field  can affect $\mu$ in the way described by França. Perhaps we need to go beyond the infinitesimal magnetic moment approximation, i.e. beyond $\tau = \mu \times B$. Rather than considering only the dipole contributions to the torque perhaps we should look at the [quadrupole terms](https://physics.stackexchange.com/a/208922). Or perhaps we need to include self consistent equations for the magnetic field - this would be in the spirit of the França paper.
+There does not appear to be an obvious way that the inhomogeneity in the field  can affect $\mu$ in the way described by França. Our equations are however not complete - there are several options for modifying the equations of motion to include more physics. We could:
+1. Include self consistent equations for the magnetic field - this would be in the spirit of the França paper.
+2. Go beyond the infinitesimal magnetic dipole approximation, i.e. beyond $\tau = \mu \times B$. Rather than considering only the dipole contributions to the torque perhaps we could also look at the [quadrupole terms](https://physics.stackexchange.com/a/208922).
+3. Add in relativistic effects arising from the accelerating motion of the particle, so called [Thomas precession](https://en.wikipedia.org/wiki/Thomas_precession).
+
+We'll consider relativity first.
+
+
+## Thomas precession
+
+In addition to the precession of $\mu$ about the magnetic field that we've described in our equations of motion, there is another term called [Thomas precession](https://en.wikipedia.org/wiki/Thomas_precession). This precession comes from the fact that the particle, whose magnetic movement we are trying to describe, is accelerating. When the particle accelerates, its instantaneous rest frame turns out to rotate with angular velocity $\omega$ given approximately (for non-relativistic speeds) by:
+$$
+\omega \approx \frac{1}{2c^2}a\times v
+$$
+where $a$ is the acceleration and $v$ the velocity.
+
+In rotating frames, the equations of motion need to be modified because the corodinate system itself is time-dependent. [Working through the details](https://www.southampton.ac.uk/~stefano/courses/PHYS2006/chapter4.pdf), one finds:
+$$
+\frac{d}{dt}_{rot} = \frac{d}{dt}_{rest} + \omega \times
+$$
+The equation of motion for $\mu$ therefore needs to be modified to give:
+$$
+\frac{d \mu}{dt} = \gamma\mu \times B +\frac{1}{2c^2}(a\times v)\times \mu
+$$
+Substituting the particle acceleration $\frac{dv}{dt} = \frac{1}{m} \mu \nabla B$, we get:
+$$
+\frac{d \mu}{dt} = \gamma \mu \times \left[ B -\frac{1}{2mc^2}(\mu\nabla B)\times v) \right]
+$$
 
 
 ---
