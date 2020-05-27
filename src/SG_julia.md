@@ -201,7 +201,7 @@ We'll initialise a random orientation of the magnetic moment using a spherical c
 
 $$ \mu = [\sin(\theta)\cos(\phi), \ \sin(\theta)\sin(\phi), \ \cos(\theta)]\mu_{Ag} $$
 
-where $\theta$ and $\phi$ are the [spherical angle coordiantes](https://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates) corresponding to the ISO convention. In order to ensure a uniform distribution we must choose
+where $\theta$ and $\phi$ are the [spherical angle coordiantes](https://en.wikipedia.org/wiki/Spherical_coordinate_system) corresponding to the ISO convention. In order to ensure a uniform distribution we must choose
 
 $$
 \theta = \arccos(2\times rand()-1)
