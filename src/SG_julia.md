@@ -58,8 +58,11 @@ m_Ag = 107.9*1.66053906660e-27
 # gyromagnetic ratio https://en.wikipedia.org/wiki/Gyromagnetic_ratio
 gyro =  g*e/(2.0*m_Ag)
 
-# magnetic moment of silver (same as a singleelectron because Ag has 1 electron in outer shell)
-mu_Ag =  mu_e;
+# magnetic moment of silver (same as a single electron because Ag has 1 electron in outer shell)
+mu_Ag =  mu_e
+
+# speed of light
+c = 299792458;
 ```
 
 ## Experimental set-up
@@ -483,7 +486,7 @@ $$
 $$
 
 
-There does not appear to be an obvious way that the inhomogeneity in the field  can affect $\mu$ in the way described by França. Our equations are however not complete - there are several options for modifying the equations of motion to include more physics. We could:
+There does not appear to be an obvious way that the inhomogeneity in the field  can affect $\mu$ in the way described by França. Our equations are however not complete - there are several non-quantum options for modifying the equations of motion to include more physics. We could:
 1. Include self consistent equations for the magnetic field - this would be in the spirit of the França paper.
 2. Go beyond the infinitesimal magnetic dipole approximation, i.e. beyond $\tau = \mu \times B$. Rather than considering only the dipole contributions to the torque perhaps we could also look at the [quadrupole terms](https://physics.stackexchange.com/a/208922).
 3. Add in relativistic effects arising from the accelerating motion of the particle, so called [Thomas precession](https://en.wikipedia.org/wiki/Thomas_precession).
@@ -493,7 +496,7 @@ We'll consider relativity first.
 
 ## Thomas precession
 
-In addition to the precession of $\mu$ about the magnetic field that we've described in our equations of motion, there is another term called [Thomas precession](https://en.wikipedia.org/wiki/Thomas_precession). This precession comes from the fact that the particle, whose magnetic movement we are trying to describe, is accelerating. When the particle accelerates, its instantaneous rest frame turns out to rotate with angular velocity $\omega$ given approximately (for non-relativistic speeds) by:
+In addition to the Larmor precession of $\mu$ that we've described in our equations of motion, there is another term called [Thomas precession](https://en.wikipedia.org/wiki/Thomas_precession). This precession arises from the acceleration of the particle (whose magnetic movement we are trying to describe). When the particle accelerates, its instantaneous rest frame turns out to rotate with angular velocity $\omega$ given approximately (for non-relativistic speeds) by:
 $$
 \omega \approx \frac{1}{2c^2}a\times v
 $$
@@ -509,8 +512,23 @@ $$
 $$
 Substituting the particle acceleration $\frac{dv}{dt} = \frac{1}{m} \mu \nabla B$, we get:
 $$
-\frac{d \mu}{dt} = \gamma \mu \times \left[ B -\frac{1}{2mc^2}(\mu\nabla B)\times v) \right]
+\frac{d \mu}{dt} = \gamma \mu \times \left[ B -\frac{1}{2\gamma mc^2}(\mu\nabla B)\times v \right]
 $$
+
+The Thomas precession creates an effective additional magnetic field of size $\frac{1}{2\gamma mc^2}(\mu\nabla B)\times v$. It is of course interesting to consider the consequences of such an effective field, but we can immediately get a sense of the importance of this effective field by plugging in some characteristic numbers from the SG experiment.
+
+```julia
+Thomas_effective_field = mu_Ag*beta*v0/(gyro*m_Ag*c^2) # recall that beta is the gradiant of the magnetic field
+Thomas_effective_field
+```
+
+Compare this to the real magnetic field:
+
+```julia
+B0
+```
+
+The Thomas precession of the magnetic moment is 16 orders of magnitude smaller than the Larmor precession. It's therefore difficult to imagine that it will have much part to play in understanding the results of the SG experiment. In addition, a modification of the precession alone doesn't appear to provide the right kind of physics to bias $\mu_z$ away from zero (which is what's França is claiming is possible using classical physics).
 
 
 ---
