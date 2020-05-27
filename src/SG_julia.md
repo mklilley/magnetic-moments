@@ -13,6 +13,9 @@ jupyter:
     name: julia-1.3
 ---
 
+<a href="https://nbviewer.jupyter.org/github/mklilley/magnetic-moments/blob/master/SG_julia.ipynb" target="_parent"><img src="https://nbviewer.jupyter.org/static/img/nav_logo.svg" alt="Open In nbviewer" width="100"/></a>
+
+
 # Stern and Gerlach simulation
 
 
